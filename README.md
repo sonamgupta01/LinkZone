@@ -1,6 +1,9 @@
 # Mini LinkedIn - Community Platform
 A modern, full-stack social media platform inspired by LinkedIn, built with Next.js, React, and SQLite.
 
+## Deployed on Vercel : https://linkzone-sigma.vercel.app/
+
+
 ## 🚀 Features
 
 ### Core Features
@@ -31,10 +34,11 @@ A modern, full-stack social media platform inspired by LinkedIn, built with Next
 
 - **Frontend**: React 18, Next.js 15, TypeScript
 - **Backend**: Next.js API Routes (serverless functions)
-- **Database**: SQLite with Prisma ORM
+- **Database**: Database: Neon PostgreSQL (Production) / SQLite (Local)
 - **Authentication**: JWT tokens with bcryptjs for password hashing
 - **Styling**: Tailwind CSS with custom gradients and animations
 - **Date Handling**: date-fns for relative timestamps
+--**Hosting**: Vercel
 
 ## 🚀 Getting Started
 
