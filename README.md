@@ -1,5 +1,4 @@
 # Mini LinkedIn - Community Platform
-
 A modern, full-stack social media platform inspired by LinkedIn, built with Next.js, React, and SQLite.
 
 ## 🚀 Features
@@ -11,7 +10,7 @@ A modern, full-stack social media platform inspired by LinkedIn, built with Next
 - **Public Feed**: Home feed showing all posts with author details and timestamps
 - **Profile Pages**: View user profiles and their posts
 
-### Interactive Features
+### Interactive Features (Additional)
 - **Like System**: Like/unlike posts with real-time counters and heart animations
 - **Search Functionality**: Search posts by content or author name
 - **Character Counter**: Real-time character counting with visual feedback (500 char limit)
@@ -42,20 +41,15 @@ A modern, full-stack social media platform inspired by LinkedIn, built with Next
 ### Installation
 
 1. **Install dependencies**
-   ```bash
    npm install
-   ```
 
 2. **Set up the database**
-   ```bash
    npx prisma migrate dev --name init
    npx prisma generate
-   ```
 
 3. **Start the development server**
-   ```bash
    npm run dev
-   ```
+
 
 4. **Open your browser**
    Navigate to `http://localhost:3000` (or the port shown in terminal)
@@ -73,7 +67,7 @@ A modern, full-stack social media platform inspired by LinkedIn, built with Next
 3. Watch the character counter for remaining characters
 4. Click "Share Post" to publish
 
-### Interacting with Posts
+### Interacting with Posts (Additional Features)
 1. **Like Posts**: Click the heart icon to like/unlike posts
 2. **View Profiles**: Click on user names to view their profiles
 3. **Search**: Use the search bar to find posts by content or author
@@ -90,7 +84,6 @@ A modern, full-stack social media platform inspired by LinkedIn, built with Next
 
 - **Responsive Design**: Works on desktop, tablet, and mobile
 - **Modern UI**: Clean, professional appearance with gradients
-- **Animations**: Smooth transitions and hover effects
 - **Loading States**: Visual feedback during actions
 - **Error Handling**: User-friendly error messages
 
