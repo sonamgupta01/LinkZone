@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { useAuth } from '@/contexts/AuthContext'
+import CommentSection from './CommentSection'
 
 interface Post {
   id: string
@@ -17,6 +18,7 @@ interface Post {
   }
   _count?: {
     likes: number
+    comments: number
   }
   likes?: Array<{ userId: string }>
 }
@@ -29,10 +31,13 @@ interface PostCardProps {
 export default function PostCard({ post, onLikeToggle }: PostCardProps) {
   const { token, user } = useAuth()
   const likesCount = post._count?.likes || 0
+  const commentsCount = post._count?.comments || 0
   const likedByMe = post.likes?.some(like => like.userId === user?.id) || false
   
   const [likes, setLikes] = useState(likesCount)
   const [liked, setLiked] = useState(likedByMe)
+  const [comments, setComments] = useState(commentsCount)
+  const [showComments, setShowComments] = useState(false)
 
   const toggleLike = async () => {
     if (!user) {
@@ -74,6 +79,18 @@ export default function PostCard({ post, onLikeToggle }: PostCardProps) {
     }
   }
 
+  const toggleComments = () => {
+    setShowComments(!showComments)
+  }
+
+  const handleCommentAdded = () => {
+    setComments(prev => prev + 1)
+    // Optionally refresh the main posts list
+    if (onLikeToggle) {
+      onLikeToggle()
+    }
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 mb-4">
       <div className="flex items-start space-x-3">
@@ -98,22 +115,41 @@ export default function PostCard({ post, onLikeToggle }: PostCardProps) {
           
           <p className="mt-2 text-gray-800 whitespace-pre-wrap leading-relaxed">{post.content}</p>
           
-          <div className="flex items-center mt-4 pt-2 border-t border-gray-100">
-            <button 
-              onClick={toggleLike} 
-              className={`flex items-center space-x-2 px-3 py-1 rounded-full text-sm transition-all duration-200 ${
-                liked 
-                  ? 'bg-red-50 text-red-600 hover:bg-red-100' 
-                  : 'bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-blue-600'
-              }`}
-            >
-              <span className="text-lg">{liked ? '❤️' : '🤍'}</span>
-              <span>{liked ? 'Unlike' : 'Like'}</span>
-            </button>
-            <span className="text-sm text-gray-500 ml-4">
-              {likes} {likes === 1 ? 'like' : 'likes'}
-            </span>
+          <div className="flex items-center justify-between mt-4 pt-2 border-t border-gray-100">
+            <div className="flex items-center space-x-4">
+              <button 
+                onClick={toggleLike} 
+                className={`flex items-center space-x-2 px-3 py-1 rounded-full text-sm transition-all duration-200 ${
+                  liked 
+                    ? 'bg-red-50 text-red-600 hover:bg-red-100' 
+                    : 'bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-blue-600'
+                }`}
+              >
+                <span className="text-lg">{liked ? '❤️' : '🤍'}</span>
+                <span>{liked ? 'Unlike' : 'Like'}</span>
+              </button>
+              
+              <button 
+                onClick={toggleComments}
+                className="flex items-center space-x-2 px-3 py-1 rounded-full text-sm bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
+              >
+                <span className="text-lg">💬</span>
+                <span>{showComments ? 'Hide' : 'Comment'}</span>
+              </button>
+            </div>
+            
+            <div className="flex items-center space-x-4 text-sm text-gray-500">
+              <span>{likes} {likes === 1 ? 'like' : 'likes'}</span>
+              <span>{comments} {comments === 1 ? 'comment' : 'comments'}</span>
+            </div>
           </div>
+          
+          {/* Comments Section */}
+          <CommentSection 
+            postId={post.id} 
+            isVisible={showComments}
+            onCommentAdded={handleCommentAdded}
+          />
         </div>
       </div>
     </div>

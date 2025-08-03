@@ -2,38 +2,34 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { verifyToken } from '@/lib/auth'
 
-export async function GET() {
+// GET /api/posts/[id]/comments - Get all comments for a post
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const posts = await db.post.findMany({
+    const { id } = await params
+    const comments = await db.comment.findMany({
+      where: {
+        postId: id
+      },
       include: {
-        author: {
+        user: {
           select: {
             id: true,
             name: true,
-            email: true,
-            bio: true
-          }
-        },
-        likes: {
-          select: {
-            userId: true
-          }
-        },
-        _count: {
-          select: {
-            likes: true,
-            comments: true
+            email: true
           }
         }
       },
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'asc'
       }
     })
 
-    return NextResponse.json({ posts })
+    return NextResponse.json({ comments })
   } catch (error) {
-    console.error('Error fetching posts:', error)
+    console.error('Error fetching comments:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -41,16 +37,19 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+// POST /api/posts/[id]/comments - Create a new comment
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await params
     const { content } = await request.json()
     
     // Get token from Authorization header
     const authHeader = request.headers.get('authorization')
-    console.log('Auth header:', authHeader ? 'Present' : 'Missing')
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('No valid auth header found')
       return NextResponse.json(
         { error: 'Authorization token required' },
         { status: 401 }
@@ -58,14 +57,9 @@ export async function POST(request: NextRequest) {
     }
 
     const token = authHeader.substring(7)
-    console.log('Token extracted, length:', token.length)
-    console.log('JWT_SECRET available:', process.env.JWT_SECRET ? 'Yes' : 'No')
-    
     const payload = verifyToken(token)
-    console.log('Token verification result:', payload ? 'Valid' : 'Invalid')
     
     if (!payload) {
-      console.log('Token verification failed')
       return NextResponse.json(
         { error: 'Invalid token' },
         { status: 401 }
@@ -75,32 +69,44 @@ export async function POST(request: NextRequest) {
     // Validate input
     if (!content || content.trim().length === 0) {
       return NextResponse.json(
-        { error: 'Content is required' },
+        { error: 'Comment content is required' },
         { status: 400 }
       )
     }
 
-    // Create post
-    const post = await db.post.create({
+    // Check if post exists
+    const post = await db.post.findUnique({
+      where: { id: id }
+    })
+
+    if (!post) {
+      return NextResponse.json(
+        { error: 'Post not found' },
+        { status: 404 }
+      )
+    }
+
+    // Create comment
+    const comment = await db.comment.create({
       data: {
         content: content.trim(),
-        authorId: payload.userId
+        userId: payload.userId,
+        postId: id
       },
       include: {
-        author: {
+        user: {
           select: {
             id: true,
             name: true,
-            email: true,
-            bio: true
+            email: true
           }
         }
       }
     })
 
-    return NextResponse.json({ post })
+    return NextResponse.json({ comment })
   } catch (error) {
-    console.error('Error creating post:', error)
+    console.error('Error creating comment:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -4,8 +4,8 @@ A modern, full-stack social media platform inspired by LinkedIn, built with Next
 ## 🚀 Features
 
 ### Core Features
-- **User Authentication**: Secure email/password registration and login with JWT tokens
 - **User Profiles**: Customizable profiles with name, email, and bio
+- **User Authentication**: Secure email/password registration and login with JWT tokens
 - **Post Management**: Create, view, and display text-only posts
 - **Public Feed**: Home feed showing all posts with author details and timestamps
 - **Profile Pages**: View user profiles and their posts
@@ -16,6 +16,10 @@ A modern, full-stack social media platform inspired by LinkedIn, built with Next
 - **Character Counter**: Real-time character counting with visual feedback (500 char limit)
 - **Responsive Design**: Beautiful, mobile-friendly interface with hover effects
 - **Real-time Updates**: Dynamic post creation and interaction feedback
+- **Users can write comments and post it** 
+- **Threaded SMS-style view for smooth conversation**
+
+
 
 ### UI/UX Enhancements
 - **Gradient Avatars**: Colorful user avatars with initials
@@ -71,6 +75,7 @@ A modern, full-stack social media platform inspired by LinkedIn, built with Next
 1. **Like Posts**: Click the heart icon to like/unlike posts
 2. **View Profiles**: Click on user names to view their profiles
 3. **Search**: Use the search bar to find posts by content or author
+4. **Comment  Posts**: Click the commit  button to  reply or comment on other posts 
 
 ## 🔒 Security Features
 
