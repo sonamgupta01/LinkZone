@@ -1,11 +1,28 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import Navigation from '@/components/Navigation'
 import PostCard from '@/components/PostCard'
 import { useAuth } from '@/contexts/AuthContext'
 import { formatDistanceToNow } from 'date-fns'
+
+interface Post {
+  id: string
+  content: string
+  author: {
+    id: string
+    name: string
+    email: string
+    bio?: string
+  }
+  _count?: {
+    likes: number
+    comments: number
+  }
+  likes?: Array<{ userId: string }>
+  createdAt: string
+}
 
 interface UserProfile {
   id: string
@@ -13,7 +30,7 @@ interface UserProfile {
   email: string
   bio?: string
   createdAt: string
-  posts: any[]
+  posts: Post[]
 }
 
 export default function ProfilePage() {
@@ -23,7 +40,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       setLoading(true)
       const response = await fetch(`/api/users/${id}`)
@@ -34,12 +51,13 @@ export default function ProfilePage() {
       } else {
         setError(data.error || 'Failed to fetch profile')
       }
-    } catch (err) {
+    } catch (error) {
+      console.error('Error fetching profile:', error)
       setError('Failed to fetch profile')
     } finally {
       setLoading(false)
     }
-  }
+  }, [id])
 
   const refreshProfile = async () => {
     try {
@@ -49,8 +67,8 @@ export default function ProfilePage() {
       if (response.ok) {
         setProfile(data.user)
       }
-    } catch (err) {
-      console.error('Error refreshing profile:', err)
+    } catch (error) {
+      console.error('Error refreshing profile:', error)
     }
   }
 
@@ -58,7 +76,7 @@ export default function ProfilePage() {
     if (id) {
       fetchProfile()
     }
-  }, [id])
+  }, [id, fetchProfile])
 
   if (!currentUser) {
     return (

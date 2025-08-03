@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import Comment from './Comment'
 
@@ -28,14 +28,7 @@ export default function CommentSection({ postId, isVisible, onCommentAdded }: Co
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Fetch comments when component becomes visible
-  useEffect(() => {
-    if (isVisible && postId) {
-      fetchComments()
-    }
-  }, [isVisible, postId])
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     setIsLoading(true)
     try {
       const response = await fetch(`/api/posts/${postId}/comments`)
@@ -51,7 +44,14 @@ export default function CommentSection({ postId, isVisible, onCommentAdded }: Co
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [postId])
+
+  // Fetch comments when component becomes visible
+  useEffect(() => {
+    if (isVisible && postId) {
+      fetchComments()
+    }
+  }, [isVisible, postId, fetchComments])
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -58,7 +58,7 @@ export default function SearchBar({ onSearch, placeholder = "Search posts..." }:
       
       {query && (
         <div className="mt-3 text-sm text-gray-600">
-          Searching for: <span className="font-medium text-gray-900">"{query}"</span>
+          Searching for: <span className="font-medium text-gray-900">&quot;{query}&quot;</span>
         </div>
       )}
     </div>

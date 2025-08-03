@@ -8,9 +8,26 @@ import SearchBar from "@/components/SearchBar"
 import { useAuth } from "@/contexts/AuthContext"
 import AuthForm from "@/components/AuthForm"
 
+interface Post {
+  id: string
+  content: string
+  author: {
+    id: string
+    name: string
+    email: string
+    bio?: string
+  }
+  _count?: {
+    likes: number
+    comments: number
+  }
+  likes?: Array<{ userId: string }>
+  createdAt: string
+}
+
 export default function Home() {
   const { user, loading } = useAuth()
-  const [posts, setPosts] = useState<any[]>([])
+  const [posts, setPosts] = useState<Post[]>([])
   const [searchQuery, setSearchQuery] = useState('')
 
   const fetchPosts = async () => {
@@ -48,7 +65,7 @@ export default function Home() {
             {filteredPosts.length === 0 && searchQuery ? (
               <div className="bg-white rounded-lg shadow p-6 text-center">
                 <div className="text-gray-500">
-                  No posts found for "{searchQuery}"
+                  No posts found for &quot;{searchQuery}&quot;
                 </div>
                 <button 
                   onClick={() => setSearchQuery('')}
